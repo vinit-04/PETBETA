@@ -1,22 +1,13 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import type { ReactNode } from 'react';
-
-interface AuthContextType {
-  token: string | null;
-  email: string | null;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, fullName: string) => Promise<void>;
-  logout: () => void;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from './AuthContextValue';
+import type { AuthContextType } from './AuthContextValue';
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [email, setEmail] = useState<string | null>(() => localStorage.getItem('email'));
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, rememberMe = false) => {
     const response = await fetch('http://localhost:9090/pet/api/v1/auth/login', {
       method: 'POST',
       headers: {
@@ -34,6 +25,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setEmail(data.email);
     localStorage.setItem('token', data.token);
     localStorage.setItem('email', data.email);
+    if (rememberMe) {
+      localStorage.setItem('savedEmail', email);
+    } else {
+      localStorage.removeItem('savedEmail');
+    }
   };
 
   const register = async (email: string, password: string, fullName: string) => {
@@ -70,12 +66,4 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

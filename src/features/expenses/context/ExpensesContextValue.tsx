@@ -1,7 +1,7 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import type { Expense } from "../types/expense.types";
 import { mockExpenses } from "../data/mockExpenses";
-import { useAuth } from "../../auth/AuthContext";
+import { useAuth } from "../../auth/useAuth";
 
 interface ExpensesContextType {
   expenses: Expense[];

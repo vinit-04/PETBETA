@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "../../features/auth/AuthContext";
+import { useAuth } from "../../features/auth/useAuth";
 import MainLayout from "../../layout/MainLayout";
 import DashboardPage from "../../features/dashboard/DashboardPage";
 import ExpensesPage from "../../features/expenses/ExpensesPage";
